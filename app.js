@@ -2,7 +2,7 @@
 // Wszystko po stronie klienta. Klucz API żyje tylko w localStorage.
 
 const LS_KEY = "jttb.gemini_key";
-const LS_CACHE = "jttb.cache.v4";
+const LS_CACHE = "jttb.cache.v6";
 const LS_THREAD = "jttb.thread.v1";
 const THREAD_TTL = 12 * 60 * 60 * 1000; // 12h
 
@@ -64,6 +64,149 @@ KONKRETNI PL ARTYŚCI (znaj ich faktyczny katalog, NIE generalizuj):
 - Borucci: rage / new wave. → Ken Carson, Carti
 - Nemz: hood trap. → Hood Trap, Dark Trap
 
+SŁOWNIK TYPE BEATÓW (znaj WSZYSTKIE, dobieraj te najbardziej pasujące — NIE tylko najpopularniejsze):
+
+US MAINSTREAM TRAP / RAP:
+- Travis Scott (Rodeo era / Birds era / Astroworld / Utopia) — psychedelic, ad-libs, mocne 808
+- Drake (Take Care era / Views / Honestly Nevermind house era / For All The Dogs) — różne ery, różne brzmienia
+- Future (mixtape era / DS2 / Honest / I Never Liked You) — dark trap, autotune, melancholic
+- 21 Savage type beat — minimalistyczny dark trap, ciężkie 808, atlantowy
+- Lil Baby type beat — klasyczny ATL trap, melodyjny
+- Lil Uzi Vert (Luv Is Rage era / Eternal Atake / Pink Tape) — od melodic do rage
+- Don Toliver type beat — melodic trap, autotune, eteryczne synthy
+- Gunna type beat — luksusowy melodic ATL trap
+- Lil Tjay / Polo G / Roddy Ricch — melodic emo trap
+- Juice WRLD type beat — emo trap, sad melodic
+- NBA YoungBoy type beat — Baton Rouge trap, agresywny
+- Kanye West (College Dropout era / 808s era / MBDTF / Yeezus / Donda) — różne ery
+- Kendrick Lamar / Vince Staples / Tyler the Creator — alt/conscious
+- Metro Boomin / Wheezy / Pi'erre Bourne / Southside / Mike Will Made-It / TM88 — producer-specific style
+
+RAGE / PLUGG / NEW WAVE (KAŻDY artysta osobny vibe, NIE jedna kategoria):
+- Ken Carson (Project X / A Great Chaos / More Chaos) — agresywny rage, distortion 808
+- Playboi Carti (Die Lit era / Whole Lotta Red era / I Am Music) — eter/rage/punk
+- Yeat (Up 2 Me / 2093 / Lyfe) — bell synths, "luh geeky", Working on Dying production
+- Destroy Lonely — minimalistyczny rage, mroczny
+- Lithe type beat — melodic rage, eteryczny, autotune-heavy
+- Summrs / Autumn! type beat — plugg melodic
+- Lucki type beat — cloud rap / plugg, lo-fi
+- Pi'erre Bourne type beat — bouncy plugg, "Yo Pierre" tag style
+- F1lthy / Working on Dying style — distorted rage
+- Pluggnb type beat — pluggnb (melodyjny plugg)
+- Hyperpop type beat (100 gecs, Bladee style)
+- Drain Gang / Yung Lean — sad cloud rap
+
+DRILL:
+- UK Drill (Central Cee / Headie One / Digga D / K-Trap / Tion Wayne) — sliding 808, ślizgające perkusje
+- NY Drill / Brooklyn Drill (Pop Smoke / Fivio Foreign / Sheff G / 22Gz) — dark, agresywne
+- Chicago Drill (Lil Durk / King Von / Lil Reese)
+- Detroit Drill (Sada Baby vibe)
+- Sexy Drill (Cash Cobain) — drill melodic
+- Jersey Club / Jersey Drill — Jersey breakbeat
+
+BOOM BAP / OLD SCHOOL:
+- Old School Boom Bap — NY 90s, klasyczny
+- Joey Bada$$ type beat — Pro Era boom bap nowoczesny
+- MF DOOM type beat — lo-fi, sample-heavy, dziwne
+- Mac Miller (Faces era / Macadelic / Swimming era) — różne ery, od lo-fi do jazz
+- Madlib type beat — psychedelic jazz boom bap
+- J Dilla type beat — soulful boom bap
+- Earl Sweatshirt type beat — abstract lo-fi
+- Griselda / Westside Gunn / Conway / Benny — modern boom bap
+- 9th Wonder type beat — soulful sample
+- Wu-Tang type beat — kung-fu boom bap
+
+PHONK / DARK:
+- Memphis Phonk (Three 6 Mafia inspired) — cowbells, low-fi
+- Drift Phonk (Kordhell / Phonk Killer / DVRST) — agresywne, gaming/drift
+- Brazilian Phonk (Funk-Phonk fusion)
+- Dark Trap type beat — mroczny, ambient, ciężki
+
+UK / EUROPE:
+- UK Garage type beat — 2-step, breakbeat, Burial vibe
+- Grime type beat (Skepta / Stormzy / JME) — 140 BPM, square wave bass
+- UK Afro Swing (J Hus / Yxng Bane) — afrobeat-rap fusion
+- Drum and Bass type beat
+- Jungle type beat
+
+CLOUD / LO-FI / EMO:
+- Cloud Rap (Yung Lean, Bladee, $uicideboy$, Bones) — washy, dreamy
+- Lo-fi Hip Hop type beat — jazzy, chill
+- Emo Trap (Juice WRLD / Lil Peep / XXXTentacion / Trippie Redd) — sad melodic
+- Sad type beat — slow, minor key, piano
+- Mellow trap / Bryson Tiller type beat — R&B trap
+
+REGIONALNE US (każdy ma swój sound):
+- Memphis (NLE Choppa, Pooh Shiesty, Glorilla) — Memphis trap modern
+- Detroit (Veeze, Babyface Ray, Icewear Vezzo) — Detroit-style minimal, off-key
+- Atlanta klasyk (Future, Young Thug era ATL)
+- West Coast (Mustard sound, Ratchet, Dre vibe)
+- Bay Area (Mozzy, ALLBLACK, hyphy)
+
+PRODUCER-SPECIFIC STYLES (warto wspomnieć gdy idealnie pasują):
+- Pi'erre Bourne, Wheezy, Metro Boomin, Southside, Pierre Bourne, Working on Dying, F1lthy, TM88, Cubeatz, Tay Keith, Murda Beatz, Cash Cobain, Mike Dean
+
+POLSKA NISZA / NOWA SCENA:
+- Panashim — PL producent/nowa fala rage, Carti-adjacent
+- Avenger — PL trap
+- Lazaro / Kafar — PL drill / hood
+- Borucci / Oki / Kidzlori / vkie / Wane / Yung Mejii — PL rage/plugg
+
+DODATKOWE NISZOWE NAZWY (znaj je i wymieniaj gdy pasują):
+
+KONKRETNI ARTYŚCI (rozszerzenie):
+- Pashanim (UWAGA: pisownia "Pashanim", NIE "panashim") — niemiecki/berliński trap, drift sound, niski autotune, melancholic, brzmienie ulicy. → "Pashanim type beat"
+- Dom Corleo — niszowy alt melodic, autotune, dreamy → "Dom Corleo type beat"
+- White 2115 — PL alt indie / eksperymentalny → "White 2115 type beat"
+- Wane (PL) — dark trap PL → "Wane type beat"
+- The Weeknd — dark R&B, XO sound (Trilogy era — Beauty Behind The Madness era — After Hours era — Dawn FM), atmospheric, 80s synths → "The Weeknd type beat"
+- Old Drake — ERA Take Care / Care Package / Nothing Was The Same (2011-2014), melancholic R&B trap, 40 production, ambient → "Old Drake type beat" (RÓŻNI się od współczesnego Drake'a)
+- Future (wczesny mixtape era / DS2 / Honest / EVOL / I Never Liked You) — dark trap autotune, melancholic banger sound
+- 21 Savage — minimalistyczny dark trap, ciężkie 808, atlantowy, Metro Boomin sound
+- Travis Scott (Rodeo / Birds / Astroworld / Utopia) — psychedelic trap, ad-libs
+- Playboi Carti (Self-titled / Die Lit / Whole Lotta Red / I Am Music) — różne ery, eter/rage/punk
+- A$AP Rocky (Live.Love.A$AP cloud era / Long.Live.A$AP / Testing / Don't Be Dumb...) — cloud → mainstream → eksperymentalny
+- Destroy Lonely — minimalistyczny rage, mroczny, atmospheric Carti-adjacent
+- Lithe — melodic rage, eteryczny, autotune-heavy
+- Central Cee — UK drill, melodic flow, sample drill
+- PartyNextDoor — Toronto OVO R&B trap, melancholic, atmospheric
+- Tory Lanez — Toronto melodic R&B trap, autotune
+- Takeoff (Migos) — ATL trap, triplet flow oriented bity
+- James Blake — alt electronic R&B, dark ambient, sparse, gospel chops, eteryczny
+- Clams Casino — cloud rap pioneer, witch house adjacent, atmospheric (Lil B / A$AP Rocky early era)
+- Lucki — cloud / plugg / lo-fi, niski autotune, depresyjny
+- Pi'erre Bourne — bouncy plugg, "Yo Pierre" tag, ATL plugg
+- Bad Bunny — reggaeton / Latin trap, dembow
+- Young Money era — Lil Wayne / Drake / Nicki Minaj 2008-2014 klasyczny południowy trap z pianinem
+- Key Glock — Memphis Paper Route Empire, klasyczny Memphis trap, hard
+- Young Dolph — Memphis, świetlany trap, charyzmatyczne flow
+
+GENRY / SUBGENRY (type beat = sam gatunek, bez specific artist):
+- "Hood Trap type beat" — twardy hood trap, ciężkie 808, dark vibe (Memphis-adjacent)
+- "Drill type beat" — generic drill gdy nie ma konkretnej sceny (UK / NY / Chi / Detroit)
+- "Ambience type beat" — ambient/atmospheric, sound design heavy, mało perkusji, dla wokalu
+- "Pato Trap type beat" — PL street trap, agresywne, ulica (Patotata era / pato sound)
+- "Disco Polo type beat" — PL synth-pop dance, kicz, melodyjne, akordeon/keytar
+- "Reggaeton type beat" — Latin dembow rhythm, dembowiec
+- "Jersey Club type beat" — Jersey breakbeat, kicks-on-3, fast tempo
+- "Jerk type beat" — LA jerk scene (Saviii 3rd, RealYungPhil, BabySantana), uplifting bounce
+- "Industrial type beat" — Death Grips / JPEGMAFIA / Yeezus-era, harsh, glitchy
+- "Noise type beat" — experimental, harsh distortion, abstract
+- "Detroit type beat" — Detroit minimal off-key, swung perkusje, ironic
+- "West Coast type beat" — Ratchet, Mustard sound, G-Funk era jak kontekst stary
+- "G-Funk type beat" — Dre / Snoop era 90s
+- "Trap soul type beat" — Bryson Tiller, melodic R&B trap
+
+ŁĄCZONE TYPE BEATY (rób je gdy oddają brzmienie LEPIEJ niż pojedyncze):
+- "Travis Scott x Don Toliver type beat" — kosmiczny melodic trap
+- "Drake x Future type beat" — What A Time To Be Alive era
+- "Nemz / Borucci type beat" lub kombinacje z drill+hood trap (PL nowa fala)
+- "Pashanim x Future type beat" — drift trap melancholic
+- "Old Drake x The Weeknd type beat" — Toronto OVO/XO sound era 2013
+- "Travis Scott x Drake x Dark Trap type beat" — łączone gatunki + artyści też OK
+
+ZASADA: gdy konkretny type beat z tej listy pasuje brzmieniowo, WOLAJ jego nazwę zamiast generycznego "Rage type beat" / "Trap type beat". Konkretne > ogólne. "Lithe type beat" lepiej niż "Rage type beat" jeśli pasuje. "Pashanim type beat" lepiej niż "Niemiecki trap" jeśli pasuje.
+
 UNIKAJ POWTÓRZEŃ:
 - NIE każdy niszowy PL artysta = Ken Carson / Carti / Rage. Spójrz na nazwę: krótkie modne nicki ("vkie", "oki", "kuqe", "kidzlori") sugerują nową falę → rage OK. Klasyczne ksywy ("Mata", "Pezet", "Białas", "Otsochodzi") → różne sceny, NIE rage. Polskie pełne imię ("Orzeł", "Sokół") → najprawdopodobniej stara szkoła / boom bap.
 - Twoje 4-6 propozycji powinno BYĆ ZRÓŻNICOWANE — nie 4 warianty trapu nowej fali z rzędu. Daj różne sceny, ery, regiony, vibe'y.
@@ -83,6 +226,10 @@ WYJŚCIE — ZAWSZE wyłącznie poprawny JSON, bez markdown, bez tekstu wokół:
   {
     "ok": true,
     "subject": "krótki tekst — kogo / czego dotyczy odpowiedź (np. 'Young Multi — Lambo' albo 'Białas, ogólnie')",
+    "top_prediction": {
+      "name": "<NAJBARDZIEJ prawdopodobny type beat, ŁĄCZONY z 2-3 elementów — np. 'Travis Scott x Drake x Dark Trap type beat' albo 'Don Toliver x Future type beat' albo 'Pashanim x Old Drake type beat'>",
+      "yt_query": "<fraza YT dla tej kombinacji, lowercase>"
+    },
     "type_beats": [
       {
         "name": "<pełna nazwa, np. 'Ken Carson type beat' albo 'Travis Scott x Don Toliver type beat'>",
@@ -92,6 +239,7 @@ WYJŚCIE — ZAWSZE wyłącznie poprawny JSON, bez markdown, bez tekstu wokół:
       }
     ]
   }
+- "top_prediction" to TWOJA NAJLEPSZA SYNTEZA — łącz 2-3 elementy z listy poniżej (artyści lub gatunki) "x" które razem najlepiej oddają brzmienie. To NIE musi być duplikat pierwszej pozycji z listy. Przykład: lista pokazuje "Ken Carson 0.85, Carti 0.80, Rage 0.70", a top_prediction = "Ken Carson x Playboi Carti x Rage type beat".
 - Lista posortowana malejąco po "probability". Zwykle 3-6 pozycji. Suma NIE musi się sumować do 1.
 - "probability" to twoja ocena jak mocno dany type beat pasuje (0-1).
 - "yt_query" powinno być tym co realnie wpiszesz w YT żeby znaleźć dobrze pasujące beaty — zwykle to po prostu nazwa lowercase, ale dla erowych wariantów może być inna (np. name: "Old Drake type beat" → yt_query: "old drake type beat take care").
@@ -333,7 +481,29 @@ function answerInnerHtml(parsed, fromCache) {
 
   const subject = parsed.subject ? `<div class="subject">${escapeHtml(parsed.subject)}</div>` : "";
   const badge = fromCache ? `<span class="cached-badge">zapisane</span>` : "";
-  const header = `<div class="answer-header"><span>dopasowane type beaty</span>${badge}</div>`;
+
+  // top prediction — wyróżniona pille nad listą
+  let topPredBlock = "";
+  const tp = parsed.top_prediction;
+  if (tp && tp.name) {
+    const topName = String(tp.name).trim();
+    const topQuery = (tp.yt_query && String(tp.yt_query).trim()) ||
+      (/type beat/i.test(topName) ? topName.toLowerCase() : `${topName.toLowerCase()} type beat`);
+    const topUrl = ytSearchUrl(topQuery);
+    topPredBlock = `
+      <div class="top-prediction">
+        <div class="top-prediction-label">najbardziej prawdopodobne</div>
+        <a class="top-prediction-card" href="${escapeHtml(topUrl)}" target="_blank" rel="noopener">
+          <div class="top-prediction-name">${escapeHtml(topName)}</div>
+          <svg class="top-prediction-arrow" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+            <path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+              d="M7 17L17 7M9 7h8v8"/>
+          </svg>
+        </a>
+      </div>`;
+  }
+
+  const header = `<div class="answer-header"><span>pozostałe trafienia</span>${badge}</div>`;
 
   const items = beats
     .map((b) => {
@@ -364,7 +534,7 @@ function answerInnerHtml(parsed, fromCache) {
     })
     .join("");
 
-  return subject + header + items;
+  return subject + topPredBlock + header + items;
 }
 
 function escapeHtml(s) {
@@ -587,7 +757,6 @@ const askBtn = document.getElementById("ask-btn");
 const menuWrap = document.getElementById("menu-wrap");
 const menuBtn = document.getElementById("menu-btn");
 const menuDropdown = document.getElementById("menu-dropdown");
-const menuResetThread = document.getElementById("menu-reset-thread");
 const menuResetKey = document.getElementById("menu-reset-key");
 
 function showSetup() {
@@ -623,19 +792,21 @@ document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") closeMenu();
 });
 
-menuResetThread.addEventListener("click", () => {
-  closeMenu();
-  clearThread();
-  populateCarousel();
-  promptInput.focus();
-});
-
 menuResetKey.addEventListener("click", () => {
   closeMenu();
   clearKey();
   clearThread();
   showSetup();
 });
+
+const resetConvBtn = document.getElementById("reset-conv-btn");
+if (resetConvBtn) {
+  resetConvBtn.addEventListener("click", () => {
+    clearThread();
+    populateCarousel();
+    promptInput.focus();
+  });
+}
 
 if (getKey()) showChat();
 else showSetup();
