@@ -811,8 +811,11 @@ main.has-thread .chips-carousel { display: none; }
   text-align: left;
   border-radius: 7px;
   cursor: pointer;
+  text-decoration: none;
   transition: background 0.12s;
 }
+
+a.menu-item:hover { color: var(--text); }
 
 .menu-item:hover { background: var(--panel-2); }
 .menu-item svg { color: var(--muted); flex-shrink: 0; }

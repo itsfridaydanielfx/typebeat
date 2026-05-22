@@ -1,8 +1,22 @@
 // jaki to type beat — Gemini-powered classifier
 // Wszystko po stronie klienta. Klucz API żyje tylko w localStorage.
 
+// signature
+(() => {
+  const _s1 = "background:linear-gradient(135deg,#9d7bff,#d7b9ff);color:#fff;padding:6px 12px;border-radius:6px 0 0 6px;font-weight:700;font-size:13px;";
+  const _s2 = "background:#1c1c1e;color:#d7b9ff;padding:6px 12px;border-radius:0 6px 6px 0;font-size:12px;";
+  const _s3 = "color:#8a8a92;font-size:11px;padding:4px 0 0;";
+  console.log("%c jaki to type beat %c @itsfridaydaniel ", _s1, _s2);
+  console.log("%c club friday · discord.gg/MpWjxGdWp3", _s3);
+  // jeśli to czytasz i nie jestem autorem — hi 👋
+  try {
+    const _o = "aXRzZnJpZGF5ZGFuaWVsL3R5cGViZWF0"; // base64
+    if (localStorage.getItem("_o") !== _o) localStorage.setItem("_o", _o);
+  } catch {}
+})();
+
 const LS_KEY = "jttb.gemini_key";
-const LS_CACHE = "jttb.cache.v6";
+const LS_CACHE = "jttb.cache.v7";
 const LS_THREAD = "jttb.thread.v1";
 const THREAD_TTL = 12 * 60 * 60 * 1000; // 12h
 
@@ -205,7 +219,25 @@ GENRY / SUBGENRY (type beat = sam gatunek, bez specific artist):
 - "Old Drake x The Weeknd type beat" — Toronto OVO/XO sound era 2013
 - "Travis Scott x Drake x Dark Trap type beat" — łączone gatunki + artyści też OK
 
-ZASADA: gdy konkretny type beat z tej listy pasuje brzmieniowo, WOLAJ jego nazwę zamiast generycznego "Rage type beat" / "Trap type beat". Konkretne > ogólne. "Lithe type beat" lepiej niż "Rage type beat" jeśli pasuje. "Pashanim type beat" lepiej niż "Niemiecki trap" jeśli pasuje.
+DODATKOWA NISZA (kolejna paczka):
+- Redda — UK rapper, melodic/drill UK scene → "Redda type beat"
+- untiljapan — underground hyperpop/digicore adjacent, lo-fi, niski autotune → "untiljapan type beat"
+- fakemink — newer plugg/rage adjacent, niszowy SoundCloud → "fakemink type beat"
+- Duwap Kaine — Atlanta plugg, Pi'erre Bourne-associated, lo-fi plugg → "Duwap Kaine type beat"
+- Veeze — Detroit minimalistyczny rap, off-key vibe, swung perkusja → "Veeze type beat"
+- Lil Yachty — TRZY ery (bardzo różne):
+  - "Lil Yachty (Lil Boat era) type beat" — bubblegum trap, beach vibe, melodic
+  - "Lil Yachty (Teenage Emotions era) type beat" — kolorowy, energetyczny, autotune
+  - "Lil Yachty (Let's Start Here era) type beat" — psychedelic rock, prog, fusion (2023, eksperymentalny)
+- Splurge — Houston rapper, southern trap, drill-adjacent → "Splurge type beat"
+- Metro Boomin — KULTOWY producent, ATL trap z dark synthami i kinowymi intro ("If Young Metro don't trust you" tag). Często gwiazda producent z Future / 21 Savage / Travis. Wymieniaj jako "Metro Boomin type beat" gdy pasuje cinematic dark trap.
+
+DODATKOWE GENRY:
+- "Evil type beat" — dark, agresywne, sinister, demoniczne basy i sample (horror-core adjacent)
+- "Evil Jerk type beat" — agresywny / dark wariant LA Jerk sceny, dark bounce
+- "Dark R&B type beat" — mroczny R&B (The Weeknd Trilogy era, PartyNextDoor mroczne numery, dvsn), sparse, atmospheric, slow
+
+ZASADA: gdy konkretny type beat z tej listy pasuje brzmieniowo, WOLAJ jego nazwę zamiast generycznego "Rage type beat" / "Trap type beat". Konkretne > ogólne. "Lithe type beat" lepiej niż "Rage type beat" jeśli pasuje. "Pashanim type beat" lepiej niż "Niemiecki trap" jeśli pasuje. "Metro Boomin type beat" lepiej niż "Dark Trap type beat" gdy faktycznie pasuje sound Metro.
 
 UNIKAJ POWTÓRZEŃ:
 - NIE każdy niszowy PL artysta = Ken Carson / Carti / Rage. Spójrz na nazwę: krótkie modne nicki ("vkie", "oki", "kuqe", "kidzlori") sugerują nową falę → rage OK. Klasyczne ksywy ("Mata", "Pezet", "Białas", "Otsochodzi") → różne sceny, NIE rage. Polskie pełne imię ("Orzeł", "Sokół") → najprawdopodobniej stara szkoła / boom bap.
@@ -799,6 +831,11 @@ menuResetKey.addEventListener("click", () => {
   showSetup();
 });
 
+// dowolny klik na link w menu zamyka dropdown
+menuDropdown.addEventListener("click", (e) => {
+  if (e.target.closest("a.menu-item")) closeMenu();
+});
+
 const resetConvBtn = document.getElementById("reset-conv-btn");
 if (resetConvBtn) {
   resetConvBtn.addEventListener("click", () => {
@@ -943,6 +980,24 @@ function autoresize() {
 }
 promptInput.addEventListener("input", autoresize);
 autoresize();
+
+// easter egg — magiczna fraza w textarea
+(() => {
+  const _phrases = ["club friday", "itsfridaydaniel", "friday daniel"];
+  promptInput.addEventListener("input", () => {
+    const v = promptInput.value.toLowerCase().trim();
+    if (_phrases.includes(v)) {
+      showToast("👋 made by @itsfridaydaniel · club friday", 6000);
+      // czyścimy żeby nie poszło jako zapytanie
+      setTimeout(() => {
+        if (promptInput.value.toLowerCase().trim() === v) {
+          promptInput.value = "";
+          autoresize();
+        }
+      }, 200);
+    }
+  });
+})();
 
 // chipy karuzeli: klik → wypełnia input
 document.addEventListener("click", (e) => {
