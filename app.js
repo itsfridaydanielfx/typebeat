@@ -16,7 +16,7 @@
 })();
 
 const LS_KEY = "jttb.gemini_key";
-const LS_CACHE = "jttb.cache.v7";
+const LS_CACHE = "jttb.cache.v9"; // bump przy każdej zmianie SYSTEM_PROMPT — inaczej stare odpowiedzi zostają w cache
 const LS_THREAD = "jttb.thread.v1";
 const THREAD_TTL = 12 * 60 * 60 * 1000; // 12h
 
@@ -27,17 +27,24 @@ const ARTIST_POOL = [
   "Schafter", "Żabson", "OIO", "ReTo", "PlanBe",
   "Oki", "Tymek", "Kuqe", "Borucci", "Sokół",
   "Taco Hemingway", "Worek", "Solar", "Kabe", "Vito Bambino",
-  // US / UK
+  "Guzior", "Szpaku", "Young Igi", "Jan-rapowanie", "Paluch",
+  "Kaz Bałagane", "Kartky", "Smolasty", "PRO8L3M", "Słoń",
+  // US / UK / EU
   "Travis Scott", "Drake", "Future", "Ken Carson", "Playboi Carti",
   "Don Toliver", "Lil Baby", "Lil Uzi Vert", "Yeat", "Destroy Lonely",
   "21 Savage", "Pop Smoke", "Central Cee", "Lil Yachty", "Gunna",
   "Metro Boomin", "Kanye West", "Kendrick Lamar", "Lil Tjay", "Polo G",
   "Juice WRLD", "Trippie Redd", "XXXTentacion", "Bryson Tiller", "PartyNextDoor",
+  "Young Thug", "Chief Keef", "Rod Wave", "Lil Tecca", "Lil Durk",
+  "The Weeknd", "Brent Faiyaz", "Lucki", "BabyTron", "Osamason",
+  "2hollis", "Pashanim", "PNL", "J. Cole", "Rio Da Yung OG",
 ];
 // Lista modeli próbowanych po kolei (jak pierwszy zwróci 429/404 — próbujemy następny).
 const MODELS = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-flash-latest"];
-const endpointFor = (model, key) =>
-  `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(key)}`;
+// Klucz idzie w nagłówku x-goog-api-key (oficjalna metoda) — działa ze starymi "AIza…",
+// nowymi "AQ.…" i przyszłymi formatami, i nie ląduje w URL-ach/logach.
+const endpointFor = (model) =>
+  `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -51,13 +58,19 @@ ZAKRES:
 - Era ma znaczenie: "old Drake" vs współczesny Drake, "old Travis" vs Utopia-era, mixtape Future vs obecny, Carti z Whole Lotta Red vs wcześniejszy itd.
 - Polska scena: mapuj artystów na REALNE type beaty z uwzględnieniem ich faktycznego brzmienia i ery. NIE każdy PL raper to "Ken Carson / Carti / Rage" — to defaultowy błąd, unikaj go.
 
+SŁAWNY ARTYSTA = WŁASNY TYPE BEAT (priorytet nad mapowaniem):
+- Jeśli artysta z inputu jest na tyle znany, że "<artysta> type beat" to ugruntowana, realnie wyszukiwana fraza na YouTube (m.in. Drake, Travis Scott, Future, Don Toliver, Playboi Carti, Ken Carson, Yeat, Gunna, Lil Baby, Lil Uzi Vert, 21 Savage, Juice WRLD, Young Thug, Chief Keef, Lil Durk, Rod Wave, Lil Tecca, Central Cee, Pop Smoke, NBA YoungBoy, The Weeknd, Brent Faiyaz, J. Cole, Eminem, Kanye West, Kendrick Lamar, Metro Boomin, Pi'erre Bourne i artyści podobnego kalibru) — PIERWSZA pozycja listy to type beat TEGO artysty (ew. doprecyzowany erą, np. "Travis Scott (Utopia era) type beat") z wysokim probability. Przykład: input "Don Toliver" → nr 1 to "Don Toliver type beat", NIE "Travis Scott type beat". NIE zastępuj sławnego artysty "podobnymi" na szczycie listy.
+- Wyjątek erowy: gdy wariant erowy sam w sobie jest konwencją i jest trafniejszy, użyj go ("Old Drake type beat" dla numerów 2011-2014 zamiast "Drake type beat").
+- Mapowanie na INNYCH artystów stosuj gdy artysta z inputu NIE ma ugruntowanej własnej konwencji type beat (większość PL sceny, nisza, świeże nazwiska) — wtedy działa zasada "Young Multi → Ken Carson type beat".
+
 MAPOWANIE PL SCEN (przy zgadywaniu):
 - Stara szkoła / klasyk: Sokół, Pezet, O.S.T.R., Eldo, Tede, Borixon, ZipSkład era → Old School Boom Bap, Jazz Boom Bap, Lo-fi Boom Bap, NY 90s
 - Boom bap nowoczesny / introspective: PRO8L3M (wczesny), Taco Hemingway, Mata (era Patotata) → Mac Miller (Faces era), Joey Bada$$, Madlib-style, Drake (Take Care era)
 - Cloud / eksperymentalny: Otsochodzi, Schafter, PlanBe, Quebonafide (RP era), ReTo → Cloud Rap, Drake (Take Care era), Mac Miller (Swimming/Faces), dark ambient hip hop
 - Melodic trap / RnB: Sobel, Bedoes, sanah, młodsi melodic → Don Toliver, Bryson Tiller, Lil Tjay, PartyNextDoor, Drake (Honestly Nevermind / Care Package era)
 - Drill / hood: Malik Montana, Kizo, Białas (era 2020+), Wac Toja (drill era) → UK Drill, NY Drill, Pop Smoke, Hood Trap, Dark Trap
-- Nowa fala rage/plugg: Oki, Borucci, Kuqe, Young Multi, Kidzlori, vkie, Wane, Yung Mejii → Ken Carson, Playboi Carti (WLR era), Yeat, Rage, Pluggnb, Pierre Bourne, Destroy Lonely
+- Nowa fala rage/plugg: Oki, Borucci, Kuqe, Young Multi, Kidzlori, Wane, Yung Mejii → Ken Carson, Playboi Carti (WLR era), Yeat, Rage, Pluggnb, Pierre Bourne, Destroy Lonely
+- Nowa fala West Coast / Detroit PL: vkie → West Coast type beat, Detroit type beat, Veeze, BabyTron (krótki nick, ale NIE rage)
 - Hood trap PL klasyk: Nemz, ReTo (twarde numery), Solar/Białas (drill-era) → Hood Trap, Dark Trap, Memphis, Detroit
 
 KONKRETNI PL ARTYŚCI (znaj ich faktyczny katalog, NIE generalizuj):
@@ -77,6 +90,7 @@ KONKRETNI PL ARTYŚCI (znaj ich faktyczny katalog, NIE generalizuj):
 - Oki: rage / plugg. → Ken Carson, Carti, Pierre Bourne, Pluggnb
 - Borucci: rage / new wave. → Ken Carson, Carti
 - Nemz: hood trap. → Hood Trap, Dark Trap
+- vkie: UWAGA, częsty błąd — mimo nowofalowego nicku to NIE rage. Dużo West Coast bounce'u i Detroit off-key. → West Coast type beat, Detroit type beat, Veeze, BabyTron; rage co najwyżej jako niska pozycja.
 
 SŁOWNIK TYPE BEATÓW (znaj WSZYSTKIE, dobieraj te najbardziej pasujące — NIE tylko najpopularniejsze):
 
@@ -237,10 +251,109 @@ DODATKOWE GENRY:
 - "Evil Jerk type beat" — agresywny / dark wariant LA Jerk sceny, dark bounce
 - "Dark R&B type beat" — mroczny R&B (The Weeknd Trilogy era, PartyNextDoor mroczne numery, dvsn), sparse, atmospheric, slow
 
+SOUTH / KLASYKA 2000s-2010s:
+- "Crunk type beat" — Lil Jon era, krzyczane hooki, klubowa energia 2000s
+- "Snap type beat" — Soulja Boy / ringtone era, minimalistyczne snapy
+- "Dirty South type beat" — UGK / Pimp C / Three 6 południowy klasyk
+- "Houston type beat" / "Chopped and Screwed type beat" — DJ Screw, slowed, syrup vibe
+- "New Orleans Bounce type beat" — bounce, triggerman beat
+- "Lex Luger type beat" — hard trap 2010-2012 (Waka Flocka era), orkiestrowe brassy, szybkie hi-haty
+- "Zaytoven type beat" — ATL pianino, Gucci Mane era
+- "Chief Keef type beat" — GloGang bop, syntezatorowy, INNY niż generyczny Chicago Drill
+- "Young Thug type beat" — YSL slime, eksperymentalny melodyjny ATL
+- "Speaker Knockerz type beat" — prekursor melodic trap, proste pianino + 808
+- "Outkast type beat" — southern funk klasyk
+
+MELODIC / PAIN / POP TRAP:
+- "Rod Wave type beat" — pain music, gitara/pianino, soulful (huge fraza)
+- "NoCap type beat" / "Toosii type beat" — pain melodic
+- "Lil Tecca type beat" — bouncy, playful melodic
+- "The Kid LAROI type beat" — emocjonalny pop trap
+- "Post Malone type beat" — pop trap, gitary
+- "Pop Punk type beat" — MGK era, gitary punk + trapowa perkusja
+
+UNDERGROUND 2023+ / NOWA FALA US:
+- "New Jazz type beat" — rage-adjacent gatunek: ambientowe pady, sparse dystorsyjne 808 (Osamason / Che vibe)
+- "Opium type beat" — mroczny sound labelu Cartiego (Ken Carson, Destroy Lonely, Homixide Gang)
+- "2hollis type beat" — electro x rage hybryda, syntezatorowa
+- "nettspend type beat" / "xaviersobased type beat" — underground lo-fi rage/jerk nowej fali
+- "Osamason type beat" / "Che type beat" — new jazz / rage nowej generacji
+- "BabyTron type beat" — Detroit ShittyBoyz, sample scam rap, punchliny
+- "Flint type beat" — Rio Da Yung OG / YN Jay, twardszy i bardziej surowy wariant Detroit
+- "Milwaukee lowend type beat" — repetytywny low-end bounce (Certified Trapper vibe)
+- "Digicore type beat" — glaive / ericdoa / midwxst, hyperpop-rap
+- "Trance type beat" — Yeat 2093 / trance-rap fala, euforyczne trance'owe synthy
+- "Krushclub type beat" — hexd / krush, bitcrushed, internetowe
+
+TRAP METAL / DARK (rozszerzenie):
+- "Trap Metal type beat" — Scarlxrd, ZillaKami, City Morgue, screamo x trap
+- "Ghostemane type beat" — industrial dark
+- "Horrorcore type beat" — horror sample, mroczna narracja
+- "Night Lovell type beat" — dark Toronto, głęboki bas
+- "Sematary type beat" — Haunted Mound, lo-fi horror trap
+
+R&B / SOUL (rozszerzenie):
+- "Brent Faiyaz type beat" — alt R&B, detuned keys, mroczno-luksusowe (huge fraza)
+- "Frank Ocean type beat" — alt R&B / soul, organiczne, emocjonalne
+- "SZA type beat" / "Summer Walker type beat" — modern R&B
+- "Neo Soul type beat" — Erykah Badu / D'Angelo vibe, żywe instrumenty
+
+CONSCIOUS / LIRYCZNY / LOOP:
+- "J. Cole type beat" — soulful boom bap trap (huge fraza)
+- "Eminem type beat" — hard-hitting, orkiestrowe, Detroit klasyk
+- "50 Cent type beat" — G-Unit 2000s NY club/street
+- "Nas type beat" / "2Pac type beat" / "Biggie type beat" — klasyki, gdy input krąży wokół nich
+- "Alchemist type beat" — loopy, soulful, filmowe sample
+- "Larry June type beat" / "Curren$y type beat" — smooth luxury rap, jazzy
+- "Isaiah Rashad type beat" — TDE mellow soulful
+- "JID type beat" / "Denzel Curry type beat" — techniczny alt rap
+- "Smino type beat" — neo-soul rap bounce
+
+DRILL (uzupełnienie):
+- "Bronx Drill type beat" — Kay Flock / Sha Ek / DThang, sample + agresja
+- "Sample Drill type beat" — NY drill na soul/pop samplach
+- "Afro Drill type beat" — drill x afrobeats
+- "Melodic Drill type beat" — Sleepy Hallow / Sheff G, melodyjny wariant
+
+ŚWIAT / EUROPA:
+- "PNL type beat" — francuski cloud, melancholic, ambientowe (bardzo popularna fraza)
+- "Freeze Corleone type beat" — francuski dark drill
+- "Ninho type beat" / "Jul type beat" — francuski trap / melodic
+- "Ufo361 type beat" — niemiecki cloud trap ("Stay High" era)
+- "Bonez MC x RAF Camora type beat" — afrotrap / dancehall DE
+- "Afrobeats type beat" — Burna Boy / Wizkid / Rema
+- "Amapiano type beat" — log drum, południowoafrykański house
+- "Dancehall type beat" — dancehall riddim
+- "Baile Funk type beat" — brazylijski funk carioca (INNE niż Brazilian Phonk)
+- "Dave type beat" — UK, pianino, introspektywny storytelling
+
+PL SCENA (uzupełnienie — mapuj precyzyjnie, jak nie znasz artysty → zasady zgadywania):
+- Guzior — alt/emo trap, melancholijny → dark melodic trap, Trippie Redd, Juice WRLD (ciemniejsze rejony)
+- Szpaku — emocjonalny street/emo trap → Juice WRLD, Dark Trap
+- Young Igi — melodic autotune trap / new wave → Lil Uzi Vert, Gunna
+- Janusz Walczuk — new wave, nietypowe flow, wysoka energia → rage x Detroit off-key
+- Jan-rapowanie — melodic indie rap → Mac Miller (Swimming era), lo-fi
+- Zeamsone — melodic autotune trap → Lil Tjay, Melodic Drill
+- Kaz Bałagane — smooth street rap, luksusowy vibe → Curren$y / Larry June x hood
+- Słoń — hardcore boom bap / horrorcore → Wu-Tang, Horrorcore
+- Paluch — nowoczesny street boom bap → hood boom bap
+- Kękę — storytelling, soulful boom bap
+- Kartky — melancholijny cloud/emo → Sad type beat, Cloud Rap
+- BLACHA — 2115 melodic trap → Gunna, Lil Baby
+- Beteo — melodic autotune trap → Don Toliver (lżejsza wersja), melodic trap
+- Young Leosia — klubowy bounce trap → Jersey Club, Sexy Drill
+- Smolasty — PL R&B trap → Bryson Tiller, PartyNextDoor
+- Fukaj — emo rap → Lil Peep, Emo Trap
+- Gverilla — mroczny, abstrakcyjny → Dark Trap, Memphis
+- Kacperczyk — indie pop rap → alt / indie type beat
+- PRO8L3M — synth noir rap, 80s electro (Art Brut vibe) → dark synthwave rap, The Weeknd (Trilogy era)
+- Żabson — bouncy, międzynarodowy trap → melodic bounce trap
+- Louis Villain / Kubi Producent — PL producenci: dark trap / melodic trap
+
 ZASADA: gdy konkretny type beat z tej listy pasuje brzmieniowo, WOLAJ jego nazwę zamiast generycznego "Rage type beat" / "Trap type beat". Konkretne > ogólne. "Lithe type beat" lepiej niż "Rage type beat" jeśli pasuje. "Pashanim type beat" lepiej niż "Niemiecki trap" jeśli pasuje. "Metro Boomin type beat" lepiej niż "Dark Trap type beat" gdy faktycznie pasuje sound Metro.
 
 UNIKAJ POWTÓRZEŃ:
-- NIE każdy niszowy PL artysta = Ken Carson / Carti / Rage. Spójrz na nazwę: krótkie modne nicki ("vkie", "oki", "kuqe", "kidzlori") sugerują nową falę → rage OK. Klasyczne ksywy ("Mata", "Pezet", "Białas", "Otsochodzi") → różne sceny, NIE rage. Polskie pełne imię ("Orzeł", "Sokół") → najprawdopodobniej stara szkoła / boom bap.
+- NIE każdy niszowy PL artysta = Ken Carson / Carti / Rage. Heurystyka nazwy działa TYLKO gdy artysty nie znasz — jeśli znasz jego faktyczny katalog, brzmienie ZAWSZE wygrywa z nickiem (przykład: vkie ma krótki nowofalowy nick, a robi West Coast/Detroit, NIE rage). Przy nieznanych: krótkie modne nicki ("oki", "kuqe", "kidzlori") sugerują nową falę → rage OK. Klasyczne ksywy ("Mata", "Pezet", "Białas", "Otsochodzi") → różne sceny, NIE rage. Polskie pełne imię ("Orzeł", "Sokół") → najprawdopodobniej stara szkoła / boom bap.
 - Twoje 4-6 propozycji powinno BYĆ ZRÓŻNICOWANE — nie 4 warianty trapu nowej fali z rzędu. Daj różne sceny, ery, regiony, vibe'y.
 - Link YouTube traktuj jako wskazówkę kontekstową (tytuł/artysta z URL). NIE udawaj że odsłuchałeś audio.
 
@@ -259,8 +372,8 @@ WYJŚCIE — ZAWSZE wyłącznie poprawny JSON, bez markdown, bez tekstu wokół:
     "ok": true,
     "subject": "krótki tekst — kogo / czego dotyczy odpowiedź (np. 'Young Multi — Lambo' albo 'Białas, ogólnie')",
     "top_prediction": {
-      "name": "<NAJBARDZIEJ prawdopodobny type beat, ŁĄCZONY z 2-3 elementów — np. 'Travis Scott x Drake x Dark Trap type beat' albo 'Don Toliver x Future type beat' albo 'Pashanim x Old Drake type beat'>",
-      "yt_query": "<fraza YT dla tej kombinacji, lowercase>"
+      "name": "<NAJBARDZIEJ prawdopodobny type beat. Gdy input to sławny artysta z własną ugruntowaną konwencją — po prostu on (np. 'Don Toliver type beat'). W pozostałych wypadkach ŁĄCZONY z 2-3 elementów — np. 'Travis Scott x Drake x Dark Trap type beat' albo 'Pashanim x Old Drake type beat'>",
+      "yt_query": "<fraza YT, lowercase>"
     },
     "type_beats": [
       {
@@ -271,15 +384,19 @@ WYJŚCIE — ZAWSZE wyłącznie poprawny JSON, bez markdown, bez tekstu wokół:
       }
     ]
   }
-- "top_prediction" to TWOJA NAJLEPSZA SYNTEZA — łącz 2-3 elementy z listy poniżej (artyści lub gatunki) "x" które razem najlepiej oddają brzmienie. To NIE musi być duplikat pierwszej pozycji z listy. Przykład: lista pokazuje "Ken Carson 0.85, Carti 0.80, Rage 0.70", a top_prediction = "Ken Carson x Playboi Carti x Rage type beat".
+- "top_prediction" to TWOJA NAJLEPSZA SYNTEZA. Gdy input to sławny artysta z własną konwencją → po prostu jego type beat (ew. z erą), bez sztucznego doklejania "x". W pozostałych wypadkach łącz 2-3 elementy (artyści lub gatunki) "x" które razem najlepiej oddają brzmienie — np. lista pokazuje "Ken Carson 0.87, Carti 0.82, Rage 0.66", a top_prediction = "Ken Carson x Playboi Carti x Rage type beat".
 - Lista posortowana malejąco po "probability". Zwykle 3-6 pozycji. Suma NIE musi się sumować do 1.
-- "probability" to twoja ocena jak mocno dany type beat pasuje (0-1).
+
+KALIBRACJA "probability" (0-1, dwa miejsca po przecinku) — ma oddawać RZECZYWISTĄ siłę dopasowania, nie szablon:
+- NIE wystawiaj odruchowo drabinki 0.90 / 0.80 / 0.70 ani samych okrągłych wielokrotności 0.05 — używaj pełnej skali (np. 0.94, 0.77, 0.63, 0.41). Okrągła wartość jest OK tylko gdy naprawdę tyle wychodzi.
+- Kotwice: 0.90-0.98 = pewniak (sławny artysta z własną konwencją, jednoznaczny input); 0.70-0.89 = mocne dopasowanie brzmieniowe; 0.50-0.69 = pasuje częściowo / jedna z kilku er; 0.30-0.49 = oszacowanie po scenie; poniżej 0.30 = luźne skojarzenie, wymieniaj tylko gdy brak lepszych.
+- Odstępy między pozycjami mają oddawać realne różnice: dwa niemal równie trafne type beaty → zbliżone wartości (np. 0.86 i 0.84); wyraźnie słabsze dopasowanie → wyraźnie niższa wartość. Nie rozciągaj sztucznie równych odstępów.
 - "yt_query" powinno być tym co realnie wpiszesz w YT żeby znaleźć dobrze pasujące beaty — zwykle to po prostu nazwa lowercase, ale dla erowych wariantów może być inna (np. name: "Old Drake type beat" → yt_query: "old drake type beat take care").
 
 ZGADYWANIE (używaj DOMYŚLNIE — odmowa to ostateczność):
 - Jeśli nazwa wygląda na rapera (PL lub zagranicznego) ale go nie kojarzysz na 100% — DAJ propozycje na podstawie sceny do której prawdopodobnie należy (patrz MAPOWANIE PL SCEN powyżej). Confidence 0.30–0.55, w "note" zaznacz że to oszacowanie po scenie.
-- WAŻNE: ANALIZUJ NAZWĘ żeby zgadnąć scenę:
-  - Krótkie modne nicki ("vkie", "oki", "kuqe", "kidzlori", "yung_") → młoda fala rage/plugg
+- WAŻNE: ANALIZUJ NAZWĘ żeby zgadnąć scenę — ale TYLKO dla artystów których naprawdę nie kojarzysz; znany katalog zawsze bije heurystykę nazwy:
+  - Krótkie modne nicki ("oki", "kuqe", "kidzlori", "yung_") → młoda fala rage/plugg
   - Klasyczne pseudonimy / pełne imiona po polsku ("Orzeł", "Sokół", "Mata", "Białas", "Pezet") → klasyk / boom bap / introspective
   - Z "Lil_" / "Yung_" / "Big_" + angielskim → US melodic trap albo nowa fala
   - Drillowe brzmienie nazwy ("Malik Montana", "Kizo") → drill
@@ -390,9 +507,9 @@ function clearKey() {
 // ---------- Gemini call ----------
 
 async function callModel(model, key, body) {
-  const res = await fetch(endpointFor(model, key), {
+  const res = await fetch(endpointFor(model), {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", "x-goog-api-key": key },
     body: JSON.stringify(body),
   });
   let detail = "";
@@ -448,7 +565,7 @@ async function askGemini(userText) {
         }
       }
 
-      if (res.status === 400 && /API key|API_KEY/i.test(detail)) {
+      if ((res.status === 400 && /API key|API_KEY/i.test(detail)) || res.status === 401) {
         throw new Error("Nieprawidłowy klucz API. Wygeneruj nowy w aistudio.google.com/apikey.");
       }
       if (res.status === 403) {
@@ -623,17 +740,17 @@ function showToast(message, durationMs = 5500) {
 
 async function validateKey(key) {
   try {
-    const r = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models?key=${encodeURIComponent(key)}`
-    );
+    const r = await fetch("https://generativelanguage.googleapis.com/v1beta/models", {
+      headers: { "x-goog-api-key": key },
+    });
     if (r.ok) return { ok: true };
     let detail = "";
     try {
       const j = await r.json();
       detail = j?.error?.message || "";
     } catch {}
-    if (r.status === 400 || r.status === 403) {
-      return { ok: false, msg: "Klucz odrzucony przez Google. Sprawdź czy skopiowałeś cały klucz." };
+    if (r.status === 400 || r.status === 401 || r.status === 403) {
+      return { ok: false, msg: "Klucz odrzucony przez Google. Sprawdź czy skopiowałeś cały klucz z aistudio.google.com/apikey." };
     }
     return { ok: false, msg: detail || `Błąd walidacji (${r.status}).` };
   } catch (e) {
@@ -861,8 +978,11 @@ saveBtn.addEventListener("click", async () => {
   const v = keyInput.value.trim();
   keyError.classList.add("hidden");
   keyError.textContent = "";
-  if (!v || !/^AIza[\w-]{10,}$/.test(v)) {
-    keyError.textContent = "To nie wygląda na klucz Gemini (powinien zaczynać się od AIza…).";
+  // Google zmienia format kluczy (kiedyś "AIza…", teraz np. "AQ.…", w przyszłości
+  // może jeszcze inaczej) — więc NIE sprawdzamy prefiksu. Tylko sanity check,
+  // prawdziwą weryfikację robi validateKey() przez realne zapytanie do API.
+  if (!v || v.length < 20 || v.length > 300 || /\s/.test(v)) {
+    keyError.textContent = "To nie wygląda na klucz API — skopiuj CAŁY klucz (bez spacji) z aistudio.google.com/apikey.";
     keyError.classList.remove("hidden");
     return;
   }
